@@ -27,16 +27,6 @@ export function LoginButtons() {
           Login with Coinbase
         </ButtonLarge>
       </div>
-      <div className="mt-2">
-        <ButtonLarge variant={'outlined'} primary onClick={loginWithGoogle} className="w-full" disabled={processing} loading={processingGoogle}>
-          Login with Google
-        </ButtonLarge>
-      </div>
-      <div className="mt-2">
-        <ButtonLarge variant={'outlined'} primary onClick={loginWithDiscord} className="w-full" disabled={processing} loading={processingDiscord}>
-          Login with Discord
-        </ButtonLarge>
-      </div>
     </div>
   );
 }

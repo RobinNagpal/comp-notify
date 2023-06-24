@@ -9,10 +9,8 @@ import {LoginModalProvider} from '@/contexts/LoginModalContext';
 import {NotificationProvider, useNotificationContext} from '@/contexts/NotificationContext';
 import Web3ReactProviderWrapper from '@/contexts/Web3ReactContext';
 import {Session} from '@/types/auth/Session';
-import {ApolloProvider} from '@apollo/client';
 import {SessionProvider} from 'next-auth/react';
-import {useMemo} from 'react';
-import 'src/app/globals.scss';
+import './globals.scss';
 import styled from 'styled-components';
 
 // Based on - https://tailwindui.com/components/application-ui/page-examples/home-screens
