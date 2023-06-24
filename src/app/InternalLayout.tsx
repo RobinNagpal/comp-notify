@@ -9,7 +9,6 @@ import {LoginModalProvider} from '@/contexts/LoginModalContext';
 import {NotificationProvider, useNotificationContext} from '@/contexts/NotificationContext';
 import Web3ReactProviderWrapper from '@/contexts/Web3ReactContext';
 import {Session} from '@/types/auth/Session';
-import {getAuthenticatedApolloClient} from '@/utils/apolloClient';
 import {ApolloProvider} from '@apollo/client';
 import {SessionProvider} from 'next-auth/react';
 import {useMemo} from 'react';
@@ -26,17 +25,17 @@ interface InternalLayoutProps {
 function ThemeComponent() {
   const isThemeCompound = true;
 
-  if (isThemeCompound) return <CompoundTheme />;
+  if (isThemeCompound) return <CompoundTheme/>;
 
   return (
     <div>
-      <GlobalTheme />
+      <GlobalTheme/>
     </div>
   );
 }
 
 const NotificationWrapper = () => {
-  const { notification, hideNotification } = useNotificationContext();
+  const {notification, hideNotification} = useNotificationContext();
 
   if (!notification) return null;
 
@@ -60,34 +59,31 @@ const StyledMain = styled.main`
   min-height: 100vh;
 `;
 
-function ChildLayout({ children, session }: InternalLayoutProps) {
+function ChildLayout({children, session}: InternalLayoutProps) {
   const origin = typeof window !== 'undefined' && window.location.hostname ? window.location.hostname : '';
-  const client = useMemo(() => getAuthenticatedApolloClient(session), [session]);
 
 
   return (
     <Web3ReactProviderWrapper>
-      <ApolloProvider client={client}>
-        <SessionProvider session={session}>
-          <ThemeComponent />
-          <LoginModalProvider>
-            <LoginModal />
-            <TopNav />
-            <StyledMain>{children}</StyledMain>
-          </LoginModalProvider>
-        </SessionProvider>
-        <NotificationWrapper />
-      </ApolloProvider>
+      <SessionProvider session={session}>
+        <ThemeComponent/>
+        <LoginModalProvider>
+          <LoginModal/>
+          <TopNav/>
+          <StyledMain>{children}</StyledMain>
+        </LoginModalProvider>
+      </SessionProvider>
+      <NotificationWrapper/>
     </Web3ReactProviderWrapper>
   );
 }
 
-export default function InternalLayout({ children, session }: InternalLayoutProps) {
+export default function InternalLayout({children, session}: InternalLayoutProps) {
   return (
 
-      <NotificationProvider>
-        <ChildLayout session={session}>{children}</ChildLayout>
-      </NotificationProvider>
+    <NotificationProvider>
+      <ChildLayout session={session}>{children}</ChildLayout>
+    </NotificationProvider>
 
   );
 }

@@ -1,6 +1,5 @@
-import { PropsWithChildren } from '@/types/PropsWithChildren';
 import { ExclamationCircleIcon } from '@heroicons/react/20/solid';
-import React, { useRef, useState } from 'react';
+import React, {PropsWithChildren, useRef, useState} from 'react';
 import styled from 'styled-components';
 import { v4 as uuidV4 } from 'uuid';
 

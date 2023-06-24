@@ -41,7 +41,7 @@ export const authOptions: AuthOptions = {
     warn(code: string) {
       console.warn(code);
     },
-    debug(code: string, metadata: string) {
+    debug(code: string, metadata: any) {
       console.debug(code, metadata);
     },
   },
