@@ -19,11 +19,12 @@ const StyledInput = styled.input`
 export interface CheckboxesProps {
   label: ReactElement | string;
   items: CheckboxItem[];
+  className?: string;
 }
 
 export default function CheckboxesWithInfo(props: CheckboxesProps) {
   return (
-    <fieldset className="border-b border-t border-gray-200">
+    <fieldset className={`border-b border-t border-gray-200 ${props.className || ''}`}>
       <legend className="sr-only">{props.label}</legend>
       {props.items.map((item) => (
         <div key={item.id} className="divide-y divide-gray-200">
