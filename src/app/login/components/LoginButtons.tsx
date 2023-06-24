@@ -6,14 +6,9 @@ export function LoginButtons() {
   const {
     loginWithMetamask,
     loginWithCoinbase,
-    loginWithGoogle,
-    loginWithDiscord,
-
     processing,
     processingMetaMask,
     processingCoinbase,
-    processingGoogle,
-    processingDiscord,
   } = useAuth();
   return (
     <div className="flex-col">
