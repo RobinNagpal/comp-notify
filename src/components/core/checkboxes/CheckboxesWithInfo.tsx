@@ -19,7 +19,9 @@ const StyledInput = styled.input`
 export interface CheckboxesProps {
   label: ReactElement | string;
   items: CheckboxItem[];
+  selectedItems: string[];
   className?: string;
+  updateSelectedItems: (selectedItems: string[]) => void;
 }
 
 export default function CheckboxesWithInfo(props: CheckboxesProps) {
@@ -42,6 +44,14 @@ export default function CheckboxesWithInfo(props: CheckboxesProps) {
                 name="comments"
                 type="checkbox"
                 className="h-4 w-4 rounded border-gray-300 focus:ring-indigo-600"
+                checked={props.selectedItems.includes(item.id)}
+                onChange={() => {
+                  if (props.selectedItems.includes(item.id)) {
+                    props.updateSelectedItems(props.selectedItems.filter((selectedItem) => selectedItem !== item.id));
+                  } else {
+                    props.updateSelectedItems([...props.selectedItems, item.id]);
+                  }
+                }}
               />
             </div>
           </div>
