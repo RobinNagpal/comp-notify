@@ -7,9 +7,6 @@ import { User } from '@/types/auth/User';
 import jwt from 'jsonwebtoken';
 import { AuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import DiscordProvider from 'next-auth/providers/discord';
-import GoogleProvider from 'next-auth/providers/google';
-import TwitterProvider from 'next-auth/providers/twitter';
 import { DefaultAdapter } from 'next-auth/adapters';
 
 export const authOptions: AuthOptions = {

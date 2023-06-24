@@ -1,13 +1,18 @@
-import Image from 'next/image'
+'use client';
 
-export default function Home() {
+import PageWrapper from '@/components/core/page/PageWrapper';
+
+
+import React from 'react';
+
+
+function Home() {
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+    <PageWrapper>
 
-
-
-
-
-    </main>
-  )
+    </PageWrapper>
+  );
 }
+
+export default Home;
