@@ -1,7 +1,7 @@
 import { EventsEnum } from '@/types/events/EventsEnum';
 
-export interface CompoundNotification {
+export interface CompoundNotification<T> {
   event: EventsEnum;
-  payload: any;
+  payload: T;
   transactionHash: string;
 }

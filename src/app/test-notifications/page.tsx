@@ -47,7 +47,7 @@ export default function TextNotify() {
             Test
           </Button>
         </div>
-        <div className="flex flex-col w-full">
+        <div className="flex flex-col w-full mt-16">
           {!loading ? <Table heading={'Events'} data={rows} columnsHeadings={['Event', 'Payload']} columnsWidthPercents={[30, 70]} /> : <RowLoading />}
         </div>
       </div>

@@ -1,49 +1,13 @@
+import { getAssetDetails } from '@/components/notifications/getAssetDetails';
 import { CompoundNotification } from '@/types/CompoundNotification';
 import { EventsEnum } from '@/types/events/EventsEnum';
+import { WithdrawReserves } from '@/types/NotificationPayloads';
 
 import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
 
-// Define ERC20 token ABI
-const erc20ABI = [
-  // Some parts of the ABI are omitted for brevity
-  {
-    constant: true,
-    inputs: [],
-    name: 'symbol',
-    outputs: [{ name: '', type: 'string' }],
-    payable: false,
-    type: 'function',
-  },
-  {
-    constant: true,
-    inputs: [],
-    name: 'decimals',
-    outputs: [{ name: '', type: 'uint8' }],
-    payable: false,
-    type: 'function',
-  },
-];
-
-async function getAssetDetails(asset: string, amount: string, provider: ethers.AbstractProvider) {
-  // Create a contract instance
-  const contract = new ethers.Contract(asset, erc20ABI, provider);
-
-  try {
-    // Fetch symbol and decimals
-    const [symbol, decimals] = await Promise.all([contract.symbol(), contract.decimals()]);
-
-    // Normalize amount
-    const normalizedAmount = ethers.formatUnits(amount, decimals);
-
-    return { normalizedAmount, symbol };
-  } catch (error) {
-    console.error('Error fetching asset details:', error);
-  }
-}
-
 export interface CompNotificationProps {
-  notification: CompoundNotification;
+  notification: CompoundNotification<any>;
 }
 
 export function CompNotification({ notification }: CompNotificationProps) {
@@ -54,7 +18,8 @@ export function CompNotification({ notification }: CompNotificationProps) {
     if (
       notification.event === EventsEnum.SupplyCollateral ||
       notification.event === EventsEnum.WithdrawCollateral ||
-      notification.event === EventsEnum.TransferCollateral
+      notification.event === EventsEnum.TransferCollateral ||
+      notification.event === EventsEnum.WithdrawReserves
     ) {
       getAssetDetails(notification.payload.asset, notification.payload.amount, provider).then((details) => {
         setAssetDetails(details);
@@ -85,6 +50,14 @@ export function CompNotification({ notification }: CompNotificationProps) {
     return (
       <div>
         TransferCollateral: {assetDetails?.normalizedAmount} {assetDetails?.symbol}
+      </div>
+    );
+  }
+  if (notification.event === EventsEnum.WithdrawReserves) {
+    const payload: WithdrawReserves = notification.payload as WithdrawReserves;
+    return (
+      <div>
+        WithdrawReserves: {assetDetails?.normalizedAmount} {assetDetails?.symbol} to {payload.to}
       </div>
     );
   }
