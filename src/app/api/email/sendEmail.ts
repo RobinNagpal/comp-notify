@@ -52,7 +52,7 @@ async function getNotificationBody(notification: CompoundNotification<any>) {
   return '';
 }
 
-export const sendNotificationEmail = async (events: CompoundNotification<any>[]) => {
+export const sendNotificationEmail = async (events: CompoundNotification<any>[], emails: string[]) => {
   // Generate an HTML email body
 
   const htmls: string[] = [];
@@ -63,18 +63,20 @@ export const sendNotificationEmail = async (events: CompoundNotification<any>[])
 
   console.log('html', JSON.stringify(html));
 
-  // Define email params
-  const msg = {
-    to: 'robinnagpal.tiet@gmail.com', // Change to your recipient
-    from: 'robinnagpal.tiet@gmail.com', // Change to your verified sender
-    subject: 'Compound Notifications',
-    text: html,
-    html,
-  };
+  for (const email of emails) {
+    // Define email params
+    const msg = {
+      to: email, // Change to your recipient
+      from: 'robinnagpal.tiet@gmail.com', // Change to your verified sender
+      subject: 'Compound Notifications',
+      text: html,
+      html,
+    };
 
-  // Send email
-  await sgMail
-    .send(msg)
-    .then(() => console.log('Email sent'))
-    .catch((error) => console.error(error));
+    // Send email
+    await sgMail
+      .send(msg)
+      .then(() => console.log('Email sent'))
+      .catch((error) => console.error(error));
+  }
 };

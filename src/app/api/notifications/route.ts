@@ -21,19 +21,25 @@ async function GET(req: NextRequest, res: NextResponse) {
   return NextResponse.json(notification);
 }
 async function POST(req: NextRequest, res: NextResponse) {
-  const { userId, selectedNotifications, addresses } = await req.json();
+  const { selectedNotifications, addresses, emails } = await req.json();
+  const token = req.headers.get('dodao-auth-token');
+  if (!token) return NextResponse.json({}, { status: 401 });
+
+  const decoded = jwt.verify(token, process.env.DODAO_AUTH_SECRET!) as JwtTokenPayload;
 
   const updatedNotification = await prisma.notifications.upsert({
     update: {
       selectedNotifications,
       addresses,
+      emails,
     },
     create: {
       selectedNotifications,
       addresses,
-      userId,
+      emails,
+      userId: decoded.username,
     },
-    where: { userId },
+    where: { userId: decoded.username },
   });
   return NextResponse.json(updatedNotification);
 }

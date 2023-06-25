@@ -1,8 +1,10 @@
 import { sendNotificationEmail } from '@/app/api/email/sendEmail';
+import { JwtTokenPayload } from '@/app/api/notifications/route';
 import { Log, parseLog, SolidityEvent } from '@/app/api/test-notifications/logParser';
 import { prisma } from '@/prisma';
 import { CompoundNotification } from '@/types/CompoundNotification';
 import { EventsEnum } from '@/types/events/EventsEnum';
+import jwt from 'jsonwebtoken';
 import { NextRequest, NextResponse } from 'next/server';
 import abi from './abi.json';
 
@@ -44,6 +46,11 @@ async function getBlockReceipts(blockNumberHex: string) {
 
 async function POST(req: NextRequest, res: NextResponse) {
   const { blockNumber } = await req.json();
+  const token = req.headers.get('dodao-auth-token');
+  if (!token) return NextResponse.json({}, { status: 401 });
+
+  const decoded = jwt.verify(token, process.env.DODAO_AUTH_SECRET!) as JwtTokenPayload;
+
   const blockNumberHex = parseInt(blockNumber).toString(16);
   const receipts = await getBlockReceipts(blockNumberHex);
 
@@ -64,7 +71,13 @@ async function POST(req: NextRequest, res: NextResponse) {
     }
   }
 
-  await sendNotificationEmail(parsedLogs);
+  const notification = await prisma.notifications.findUnique({
+    where: { userId: decoded.username },
+  });
+
+  if (notification?.emails?.length) {
+    await sendNotificationEmail(parsedLogs, notification.emails);
+  }
 
   return NextResponse.json(parsedLogs);
 }

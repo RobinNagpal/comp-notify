@@ -5,6 +5,7 @@ import Button from '@/components/core/buttons/Button';
 import CheckboxesWithInfo from '@/components/core/checkboxes/CheckboxesWithInfo';
 import { Grid2Cols } from '@/components/core/grids/Grid2Cols';
 import PageWrapper from '@/components/core/page/PageWrapper';
+import { useLoginModalContext } from '@/contexts/LoginModalContext';
 import { useNotificationContext } from '@/contexts/NotificationContext';
 import { EventsEnum } from '@/types/events/EventsEnum';
 import { getAuthToken } from '@/utils/getAuthToken';
@@ -42,7 +43,8 @@ function Home() {
       const data = await response.json();
       if (data) {
         setSelectedNotifications(data.selectedNotifications);
-        setAddresses(data.addresses.map((b: string) => ({ id: b, label: b })));
+        setAddresses(data.addresses.map((a: string) => ({ id: a, label: a })));
+        setEmails(data.emails.map((e: string) => ({ id: e, label: e })));
       }
     }
   }
@@ -80,7 +82,7 @@ function Home() {
         'Content-Type': 'application/json',
         'dodao-auth-token': dodaoAccessToken!,
       },
-      body: JSON.stringify({ userId: session?.username!, selectedNotifications, addresses: addresses.map((b) => b.id) }),
+      body: JSON.stringify({ userId: session?.username!, selectedNotifications, addresses: addresses.map((b) => b.id), emails: emails.map((e) => e.id) }),
     });
     if (response.status !== 200) {
       showNotification({ message: 'Error saving notifications', type: 'error' });
@@ -89,25 +91,33 @@ function Home() {
     }
   }
 
+  const { setShowLoginModal } = useLoginModalContext();
+
   return (
     <PageWrapper>
-      <div className="flex flex-col items-center justify-center w-full h-full">
-        <h1 className="text-4xl font-bold">Welcome to the Compound Notify</h1>
-        <Grid2Cols>
-          <UpsertBadgeInput label={'Tracking Addresses'} onRemove={removeAddressFromList} badges={addresses} onAdd={addAddressToList} />
-          <UpsertBadgeInput label={'Emails'} onRemove={removeEmailsFromList} badges={emails} onAdd={addEmailToList} />
-          <CheckboxesWithInfo
-            label={'Notifications'}
-            items={checkboxItems}
-            className={'mt-16 max-h-96 overflow-auto pr-8 w-full'}
-            selectedItems={selectedNotifications}
-            updateSelectedItems={setSelectedNotifications}
-          />
-        </Grid2Cols>
-        <Button className="mt-8" variant="contained" primary disabled={!session?.username} onClick={() => saveNotifications()}>
-          Save
-        </Button>
-      </div>
+      <h1 className="text-4xl font-bold  items-center w-full h-full text-center">Welcome to the Compound Notify</h1>
+      {session ? (
+        <div className="flex flex-col items-center justify-center w-full h-full">
+          <Grid2Cols>
+            <UpsertBadgeInput label={'Tracking Addresses'} onRemove={removeAddressFromList} badges={addresses} onAdd={addAddressToList} />
+            <UpsertBadgeInput label={'Emails'} onRemove={removeEmailsFromList} badges={emails} onAdd={addEmailToList} />
+            <CheckboxesWithInfo
+              label={'Notifications'}
+              items={checkboxItems}
+              className={'mt-16 max-h-96 overflow-auto pr-8 w-full'}
+              selectedItems={selectedNotifications}
+              updateSelectedItems={setSelectedNotifications}
+            />
+          </Grid2Cols>
+          <Button className="mt-8" variant="contained" primary disabled={!session?.username} onClick={() => saveNotifications()}>
+            Save
+          </Button>
+        </div>
+      ) : (
+        <div className="flex flex-col items-center justify-center w-full h-screen">
+          <Button onClick={() => setShowLoginModal(true)}>Login</Button>
+        </div>
+      )}
     </PageWrapper>
   );
 }
