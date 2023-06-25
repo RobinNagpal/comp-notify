@@ -13,18 +13,41 @@ Handlebars.registerHelper('eq', (v1, v2) => {
 sgMail.setApiKey(process.env.SENDGRID_API_KEY!); // use SendGrid API Key from environment variable
 
 async function getNotificationBody(notification: CompoundNotification<any>) {
-  const defaultProvider = ethers.getDefaultProvider('homestead', { etherscan: process.env.ETHERSCAN_API_KEY });
+  const provider = ethers.getDefaultProvider('homestead', { etherscan: process.env.ETHERSCAN_API_KEY });
   if (
     notification.event === EventsEnum.SupplyCollateral ||
     notification.event === EventsEnum.WithdrawCollateral ||
     notification.event === EventsEnum.TransferCollateral ||
     notification.event === EventsEnum.WithdrawReserves
   ) {
-    // Load template from a file and compile it
     const source = readFileSync('./src/handlebars/CompNotification.hbs', 'utf8');
     const template = Handlebars.compile(source);
-    const assetDetails = await getAssetDetails(notification.payload.asset, notification.payload.amount, defaultProvider);
+    const assetDetails = await getAssetDetails(notification.payload.asset, notification.payload.amount, provider);
     return template({ notification, assetDetails });
+  }
+
+  if (notification.event === EventsEnum.Supply || notification.event === EventsEnum.Withdraw) {
+    const source = readFileSync('./src/handlebars/CompNotification.hbs', 'utf8');
+    const template = Handlebars.compile(source);
+    const assetDetails = await getAssetDetails('0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', notification.payload.amount, provider);
+    return template({ notification, assetDetails });
+  }
+  if (notification.event === EventsEnum.AbsorbDebt) {
+    const source = readFileSync('./src/handlebars/AbsorbDebtNotification.hbs', 'utf8');
+    const template = Handlebars.compile(source);
+    const assetDetails = getAssetDetails('0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', notification.payload.basePaidOut.toString(), provider);
+    return template({ notification, assetDetails });
+  }
+  if (notification.event === EventsEnum.AbsorbCollateral) {
+    const source = readFileSync('./src/handlebars/AbsorbCollateralNotification.hbs', 'utf8');
+    const template = Handlebars.compile(source);
+    const assetDetails = getAssetDetails('0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', notification.payload.collateralAbsorbed.toString(), provider);
+    return template({ notification, assetDetails });
+  }
+  if (notification.event === EventsEnum.PauseAction) {
+    const source = readFileSync('./src/handlebars/PauseActionNotification.hbs', 'utf8');
+    const template = Handlebars.compile(source);
+    return template({ notification });
   }
   return '';
 }
