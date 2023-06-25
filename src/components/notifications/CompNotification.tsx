@@ -1,4 +1,7 @@
 import { getAssetDetails } from '@/components/notifications/getAssetDetails';
+import AbsorbCollateralNotification from '@/components/notifications/Notifications/AbsorbCollateralNotification';
+import AbsorbDebtNotification from '@/components/notifications/Notifications/AbsorbDebtNotification';
+import PauseActionNotification from '@/components/notifications/Notifications/PauseActionNotification';
 import { CompoundNotification } from '@/types/CompoundNotification';
 import { EventsEnum } from '@/types/events/EventsEnum';
 import { WithdrawReserves } from '@/types/NotificationPayloads';
@@ -68,5 +71,18 @@ export function CompNotification({ notification }: CompNotificationProps) {
   if (notification.event === EventsEnum.Supply) {
     return <div>Supply: {assetDetails?.normalizedAmount} USDC</div>;
   }
+
+  if (notification.event === EventsEnum.PauseAction) {
+    return <PauseActionNotification notification={notification} />;
+  }
+
+  if (notification.event === EventsEnum.AbsorbCollateral) {
+    return <AbsorbCollateralNotification notification={notification} />;
+  }
+
+  if (notification.event === EventsEnum.AbsorbDebt) {
+    return <AbsorbDebtNotification notification={notification} />;
+  }
+
   return <div>{JSON.stringify(notification)}</div>;
 }

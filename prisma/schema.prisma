@@ -91,7 +91,13 @@ model Notifications {
   userId                String   @id @map("user_id")
   selectedNotifications String[] @map("selected_notifications")
   addresses             String[] @map("addresses")
+  emails                String[] @map("emails")
 
   @@unique([userId])
   @@map("notifications")
+}
+
+model BlockReceipts {
+  blockNumber String @id @map("block_number")
+  receipts    Json[]
 }

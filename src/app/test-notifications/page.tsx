@@ -14,7 +14,7 @@ import React, { useState } from 'react';
 
 export default function TextNotify() {
   const [blockNumber, setBlockNumber] = React.useState<string>('17550550');
-  const [parsedLogs, setParsedLogs] = React.useState<CompoundNotification[]>([]);
+  const [parsedLogs, setParsedLogs] = React.useState<CompoundNotification<any>[]>([]);
   const [loading, setLoading] = useState(false);
   const { data: session } = useSession();
   const { showNotification } = useNotificationContext();

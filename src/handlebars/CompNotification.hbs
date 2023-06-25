@@ -1,0 +1,33 @@
+<h1>{{notification.event}}</h1>
+
+{{#if assetDetails}}
+  {{#if (eq notification.event "SupplyCollateral")}}
+    SupplyCollateral: {{assetDetails.normalizedAmount}} {{assetDetails.symbol}}
+  {{/if}}
+  {{#if (eq notification.event "WithdrawCollateral")}}
+    WithdrawCollateral: {{assetDetails.normalizedAmount}} {{assetDetails.symbol}}
+  {{/if}}
+  {{#if (eq notification.event "TransferCollateral")}}
+    TransferCollateral: {{assetDetails.normalizedAmount}} {{assetDetails.symbol}}
+  {{/if}}
+  {{#if (eq notification.event "WithdrawReserves")}}
+    WithdrawReserves: {{assetDetails.normalizedAmount}} {{assetDetails.symbol}} to {{notification.payload.to}}
+  {{/if}}
+  {{#if (eq notification.event "Withdraw")}}
+    Withdraw: {{assetDetails.normalizedAmount}} USDC
+  {{/if}}
+  {{#if (eq notification.event "Supply")}}
+    Supply: {{assetDetails.normalizedAmount}} USDC
+  {{/if}}
+{{/if}}
+{{#if (eq notification.event "PauseAction")}}
+  {{> PauseActionNotification}}
+{{/if}}
+{{#if (eq notification.event "AbsorbCollateral")}}
+  {{> AbsorbCollateralNotification}}
+{{/if}}
+{{#if (eq notification.event "AbsorbDebt")}}
+  {{> AbsorbDebtNotification}}
+{{/if}}
+
+<br/>

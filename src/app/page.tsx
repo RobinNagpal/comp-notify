@@ -94,19 +94,15 @@ function Home() {
       <div className="flex flex-col items-center justify-center w-full h-full">
         <h1 className="text-4xl font-bold">Welcome to the Compound Notify</h1>
         <Grid2Cols>
-          <div className="px-2">
-            <UpsertBadgeInput label={'Tracking Addresses'} onRemove={removeAddressFromList} badges={addresses} onAdd={addAddressToList} />
-            <CheckboxesWithInfo
-              label={'Notifications'}
-              items={checkboxItems}
-              className={'mt-16 max-h-96 overflow-auto pr-8'}
-              selectedItems={selectedNotifications}
-              updateSelectedItems={setSelectedNotifications}
-            />
-          </div>
-          <div className="px-2">
-            <UpsertBadgeInput label={'Emails'} onRemove={removeEmailsFromList} badges={emails} onAdd={addEmailToList} />
-          </div>
+          <UpsertBadgeInput label={'Tracking Addresses'} onRemove={removeAddressFromList} badges={addresses} onAdd={addAddressToList} />
+          <UpsertBadgeInput label={'Emails'} onRemove={removeEmailsFromList} badges={emails} onAdd={addEmailToList} />
+          <CheckboxesWithInfo
+            label={'Notifications'}
+            items={checkboxItems}
+            className={'mt-16 max-h-96 overflow-auto pr-8 w-full'}
+            selectedItems={selectedNotifications}
+            updateSelectedItems={setSelectedNotifications}
+          />
         </Grid2Cols>
         <Button className="mt-8" variant="contained" primary disabled={!session?.username} onClick={() => saveNotifications()}>
           Save
