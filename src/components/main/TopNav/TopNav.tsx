@@ -1,14 +1,14 @@
 import ButtonLarge from '@/components/core/buttons/Button';
-import {DesktopNavLink} from '@/components/main/TopNav/DesktopNavLink';
-import {DesktopProfileMenu} from '@/components/main/TopNav/DesktopProfileMenu';
-import {MobileNavLink} from '@/components/main/TopNav/MobileNavLink';
-import {MobileProfileMenu} from '@/components/main/TopNav/MobileProfileMenu';
-import {useLoginModalContext} from '@/contexts/LoginModalContext';
-import {Session} from '@/types/auth/Session';
-import {Disclosure} from '@headlessui/react';
+import { DesktopNavLink } from '@/components/main/TopNav/DesktopNavLink';
+import { DesktopProfileMenu } from '@/components/main/TopNav/DesktopProfileMenu';
+import { MobileNavLink } from '@/components/main/TopNav/MobileNavLink';
+import { MobileProfileMenu } from '@/components/main/TopNav/MobileProfileMenu';
+import { useLoginModalContext } from '@/contexts/LoginModalContext';
+import { Session } from '@/types/auth/Session';
+import { Disclosure } from '@headlessui/react';
 import Bars3Icon from '@heroicons/react/24/outline/Bars3Icon';
 import XMarkIcon from '@heroicons/react/24/outline/XMarkIcon';
-import {useSession} from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
@@ -20,19 +20,17 @@ const StyledDiv = styled.div`
 `;
 
 function DesktopNavLinks() {
-
   return (
     <div className="hidden md:ml-6 md:flex md:space-x-8">
-      <DesktopNavLink key="link1" href="/link1" label="Link1" />
+      <DesktopNavLink key="test-notifications" href="/test-notifications" label="Test Notifications" />
     </div>
   );
 }
 
 function MobileNavLinks() {
-
   return (
     <div className="space-y-1 pb-3 pt-2">
-      <MobileNavLink key="link1" href="/link1" label="Link1" />
+      <MobileNavLink key="test-notifications" href="/test-notifications" label="Test Notifications" />
     </div>
   );
 }
@@ -85,12 +83,11 @@ export default function TopNav() {
                       />
                     </Link>
                   </div>
-                  <DesktopNavLinks  />
+                  <DesktopNavLinks />
                 </div>
                 <div className="flex items-center">
                   <div className="flex-shrink-0">
                     {!session && (
-
                       <ButtonLarge variant="contained" primary onClick={() => setShowLoginModal(true)}>
                         Login
                       </ButtonLarge>
@@ -107,7 +104,7 @@ export default function TopNav() {
             </div>
 
             <Disclosure.Panel className="md:hidden">
-              <MobileNavLinks  />
+              <MobileNavLinks />
               {session && <MobileProfileMenu session={session as Session} />}
             </Disclosure.Panel>
           </>

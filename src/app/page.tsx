@@ -3,10 +3,11 @@
 import UpsertBadgeInput, { Badges } from '@/components/core/badge/UpsertBadgeInput';
 import Button from '@/components/core/buttons/Button';
 import CheckboxesWithInfo from '@/components/core/checkboxes/CheckboxesWithInfo';
+import { Grid2Cols } from '@/components/core/grids/Grid2Cols';
 import PageWrapper from '@/components/core/page/PageWrapper';
 import { useNotificationContext } from '@/contexts/NotificationContext';
-import { Session } from '@/types/auth/Session';
 import { EventsEnum } from '@/types/events/EventsEnum';
+import { getAuthToken } from '@/utils/getAuthToken';
 import { union, unionBy } from 'lodash';
 import { useSession } from 'next-auth/react';
 
@@ -23,11 +24,11 @@ function Home() {
   }));
   const { showNotification } = useNotificationContext();
   const [addresses, setAddresses] = React.useState<Badges[]>([]);
+  const [emails, setEmails] = React.useState<Badges[]>([]);
   const [selectedNotifications, setSelectedNotifications] = React.useState<string[]>([]);
 
-  async function fetchNotifications(userId: string) {
-    const dodaoAccessToken = (session as Session).dodaoAccessToken;
-    if (!dodaoAccessToken) return;
+  async function fetchNotifications() {
+    const dodaoAccessToken = getAuthToken(session, showNotification);
     const response = await fetch('/api/notifications', {
       method: 'GET',
       headers: {
@@ -50,7 +51,7 @@ function Home() {
     let username = session?.username;
     if (!username) return;
 
-    fetchNotifications(username.toLowerCase());
+    fetchNotifications();
 
     setAddresses(unionBy(addresses, [{ id: username.toLowerCase(), label: username.toLowerCase() }], 'id'));
   }, [session]);
@@ -59,15 +60,25 @@ function Home() {
     setAddresses(addresses.filter((b) => b.id !== badge));
   }
 
+  function removeEmailsFromList(email: string) {
+    setEmails(emails.filter((b) => b.id !== email));
+  }
+
   function addAddressToList(badge: string) {
     setAddresses(union(addresses, [{ id: badge, label: badge }]));
   }
 
+  function addEmailToList(badge: string) {
+    setEmails(union(emails, [{ id: badge, label: badge }]));
+  }
+
   async function saveNotifications() {
+    const dodaoAccessToken = getAuthToken(session, showNotification);
     const response = await fetch('/api/notifications', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'dodao-auth-token': dodaoAccessToken!,
       },
       body: JSON.stringify({ userId: session?.username!, selectedNotifications, addresses: addresses.map((b) => b.id) }),
     });
@@ -82,14 +93,21 @@ function Home() {
     <PageWrapper>
       <div className="flex flex-col items-center justify-center w-full h-full">
         <h1 className="text-4xl font-bold">Welcome to the Compound Notify</h1>
-        <UpsertBadgeInput label={'Notification Addresses'} onRemove={removeAddressFromList} badges={addresses} onAdd={addAddressToList} />
-        <CheckboxesWithInfo
-          label={'Notifications'}
-          items={checkboxItems}
-          className={'mt-16'}
-          selectedItems={selectedNotifications}
-          updateSelectedItems={setSelectedNotifications}
-        />
+        <Grid2Cols>
+          <div className="px-2">
+            <UpsertBadgeInput label={'Tracking Addresses'} onRemove={removeAddressFromList} badges={addresses} onAdd={addAddressToList} />
+            <CheckboxesWithInfo
+              label={'Notifications'}
+              items={checkboxItems}
+              className={'mt-16 max-h-96 overflow-auto pr-8'}
+              selectedItems={selectedNotifications}
+              updateSelectedItems={setSelectedNotifications}
+            />
+          </div>
+          <div className="px-2">
+            <UpsertBadgeInput label={'Emails'} onRemove={removeEmailsFromList} badges={emails} onAdd={addEmailToList} />
+          </div>
+        </Grid2Cols>
         <Button className="mt-8" variant="contained" primary disabled={!session?.username} onClick={() => saveNotifications()}>
           Save
         </Button>

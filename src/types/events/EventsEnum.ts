@@ -5,7 +5,7 @@ export enum EventsEnum {
   PauseAction = 'PauseAction',
   Supply = 'Supply',
   SupplyCollateral = 'SupplyCollateral',
-  Transfer = 'Transfer',
+  // Transfer = 'Transfer',
   TransferCollateral = 'TransferCollateral',
   Withdraw = 'Withdraw',
   WithdrawCollateral = 'WithdrawCollateral',

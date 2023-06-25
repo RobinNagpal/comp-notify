@@ -4,7 +4,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 export interface TableRow {
-  columns: string[];
+  columns: (string | React.ReactElement)[];
   id: string;
   item: any;
 }
